@@ -83,10 +83,19 @@ func main() {
 		m := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 
 		if update.Message.IsCommand() {
-			if update.Message.Text == "/all" {
+			var command string
+			if update.Message.Entities != nil {
+				for _, entity := range *update.Message.Entities {
+					if entity.Type == "bot_command" {
+						command = update.Message.Text[entity.Offset:entity.Length]
+						break
+					}
+				}
+			}
+			if command == "/all" {
 				m.Text = allProverbs()
 			}
-			if update.Message.Text == "/random" {
+			if command == "/random" {
 				m.Text = randomProverb()
 			}
 		}
